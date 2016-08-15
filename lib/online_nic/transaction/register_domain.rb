@@ -22,7 +22,7 @@ module OnlineNic
       admin = config[:admin].to_s
       tech = config[:tech].to_s
       billing = config[:billing].to_s
-      # ced required for ASIA registration
+      # ced required for ASIA registration. See Online NIC API reference
       password = 'password12345' # TODO Generate a password
       checksum = create_checksum(cltrid, 'createdomain', domaintype, domain, period, dns1, dns2, registrant, admin, tech, billing, password)
       request = '<request> <category>domain</category> <action>CreateDomain</action> <params> <param name="domaintype">' + domaintype + '</param> <param name="mltype">0</param> <param name="domain">' + domain + '</param> <param name="period">' + period + '</param> <param name="dns">' + dns1 + '</param> <param name="dns">' + dns2 + '</param> <param name="registrant">' + registrant + '</param> <param name="tech">' + tech + '</param> <param name="billing">' + billing + '</param> <param name="admin">' + admin + '</param> <param name="password">' + password + '</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
@@ -32,9 +32,7 @@ module OnlineNic
     def process_response
       action = get_action
       if action == 'domain/CreateDomain'
-        document.elements.each('response/resData/data') { |element|
-          result[element.attributes['name']] = element.text
-        }
+        set_response OnlineNic::Response::RegisterDomain.new(document)
         logout
       else
         raise "Invalid response"
