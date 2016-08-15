@@ -4,7 +4,7 @@ class OnlineNic::Response::CheckDomain < OnlineNic::Response::Base
   def post_initialize
     if success?
       @domain = data['domain']
-      @available = data['avail'] == 1 || data['price']
+      @available = (data['avail'] == 1) || !data['price'].to_s.empty?
       @price = data['price']
     end
   end
