@@ -11,7 +11,8 @@ module OnlineNic
     def process_response
       action = get_action
       if action == 'domain/CheckDomain'
-        if config[:with_price]
+        response = OnlineNic::Response::CheckDomain.new(document)
+        if response.available? and config[:with_price]
           domain = config[:domain]
           domaintype = DomainExtensions.get_type(domain)
           cltrid = create_cltrid
@@ -19,7 +20,7 @@ module OnlineNic
           request = '<request> <category>domain</category> <action>GetDomainPrice</action> <params> <param name="domaintype">' + domaintype + '</param> <param name="domain">' + domain + '</param> <param name="op">reg</param> <param name="period">1</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
           send_data request
         else
-          set_response OnlineNic::Response::CheckDomain.new(document)
+          set_response response
           logout
         end
       elsif action == 'domain/GetDomainPrice'
