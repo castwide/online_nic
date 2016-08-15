@@ -16,6 +16,9 @@ module OnlineNic
   def self.register_domain config
     transact OnlineNic::Transaction::RegisterDomain, config
   end
+  def self.get_name_servers config
+    transact OnlineNic::Transaction::GetNameServers, config
+  end
   def self.update_dns config
     transact OnlineNic::Transaction::UpdateDns, config
     #begin
