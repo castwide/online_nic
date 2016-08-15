@@ -11,7 +11,6 @@ module OnlineNic
     def process_response
       action = get_action
       if action == 'domain/CheckDomain'
-        parse_result
         if config[:with_price]
           domain = config[:domain]
           domaintype = DomainExtensions.get_type(domain)
@@ -20,13 +19,14 @@ module OnlineNic
           request = '<request> <category>domain</category> <action>GetDomainPrice</action> <params> <param name="domaintype">' + domaintype + '</param> <param name="domain">' + domain + '</param> <param name="op">reg</param> <param name="period">1</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
           send_data request
         else
+          set_response OnlineNic::Response::CheckDomain.new(document)
           logout
         end
       elsif action == 'domain/GetDomainPrice'
-        parse_result
+        set_response OnlineNic::Response::CheckDomain.new(document)
         logout
       else
-        raise "Cannot handle response"
+        raise "Unable to handle action #{action}"
       end    
     end
   end

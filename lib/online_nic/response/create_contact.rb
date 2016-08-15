@@ -1,4 +1,4 @@
-class OnlineNic::Response::CreateContact < OnlineNice::Response::Base
+class OnlineNic::Response::CreateContact < OnlineNic::Response::Base
   attr_reader :contactid
   def post_initialize
     if success?

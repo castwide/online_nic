@@ -3,7 +3,7 @@ require 'rexml/document'
 module OnlineNic
   class Transaction::Base < EventMachine::Connection
     #attr_reader :config, :document
-    attr_reader :config, :response
+    attr_reader :config
     
     def initialize username, password, config
       @username = username
@@ -92,7 +92,7 @@ module OnlineNic
     def document
       @document
     end
-    def response=(response_object)
+    def set_response response_object
       @response = response_object
     end
   end

@@ -15,6 +15,7 @@ module OnlineNic
   #   voice: the contact's phone number
   #   fax
   #   email
+  #
   class Transaction::CreateContact < Transaction::Base
     def process_request
       cltrid = create_cltrid
@@ -29,8 +30,7 @@ module OnlineNic
     def process_response
       action = get_action
       if action == 'domain/CreateContact'
-        #parse_result
-        response = OnlineNic::Response::Base.new(document)
+        set_response OnlineNic::Response::CreateContact.new(document)
         logout
       else
         raise "Failed to handle action #{action}"
