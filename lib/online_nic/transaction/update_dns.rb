@@ -17,7 +17,7 @@ module OnlineNic
       if action == 'domain/UpdateDomainDns'
         logout
       else
-        raise "Cannot handle response"
+        raise "Unexpected action #{action}"
       end    
     end
   end
