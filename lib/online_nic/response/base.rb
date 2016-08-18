@@ -1,4 +1,5 @@
 class OnlineNic::Response::Base
+  include OnlineNic::Transaction::Helpers
   attr_reader :document, :data, :error
   
   def initialize document
@@ -27,7 +28,19 @@ class OnlineNic::Response::Base
   end
   def parse_response_data
     document.elements.each('response/resData/data') { |element|
-      @data[element.attributes['name']] = element.text
+      if many_elements?(get_action, element.attributes['name'])
+        @data[element.attributes['name']] ||= []
+        @data[element.attributes['name']].push element.text
+      else
+        @data[element.attributes['name']] = element.text
+      end
     }
+  end
+  def many_elements? action, name
+    if action == 'domain/InfoDomain' and name == 'dns'
+      true
+    else
+      false
+    end
   end
 end

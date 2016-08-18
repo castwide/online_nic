@@ -3,4 +3,5 @@ module OnlineNic::Response
   autoload :CheckDomain, 'online_nic/response/check_domain'
   autoload :CreateContact, 'online_nic/response/create_contact'
   autoload :RegisterDomain, 'online_nic/response/register_domain'
+  autoload :GetDomainInfo, 'online_nic/response/get_domain_info'
 end

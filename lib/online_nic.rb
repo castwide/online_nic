@@ -10,7 +10,6 @@ module OnlineNic
   end
   def self.create_contact config
     result = transact OnlineNic::Transaction::CreateContact, config
-    puts "**************** RESULT #{result.inspect}"
     result
   end
   def self.register_domain config
@@ -21,19 +20,14 @@ module OnlineNic
   end
   def self.update_dns config
     transact OnlineNic::Transaction::UpdateDns, config
-    #begin
-    #  EventMachine.run do
-    #    EventMachine.connect 'www.onlinenic.com', 30009, OnlineNic::Transaction::UpdateDns, '589467', 'awaken!allah', config
-    #  end
-    #  true
-    ## TODO This is a bad way to handle this.
-    #rescue Exception => e
-    #  false
-    #end
+  end
+  def self.get_domain_info config
+    transact OnlineNic::Transaction::GetDomainInfo, config
   end
   class << self
     private
     def transact cls, config
+      puts "Transacting: #{config.inspect}"
       connection = nil
       EventMachine.run do
         login = {}

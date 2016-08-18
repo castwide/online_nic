@@ -2,6 +2,7 @@ require 'rexml/document'
 
 module OnlineNic
   class Transaction::Base < EventMachine::Connection
+    include OnlineNic::Transaction::Helpers
     #attr_reader :config, :document
     attr_reader :config
     
@@ -12,6 +13,7 @@ module OnlineNic
       @logged_in = false
       @logging_out = false
       @document = nil
+      @cache = ''
       super
     end
     def receive_data(data)
@@ -28,13 +30,24 @@ module OnlineNic
       #end
       #@response = OnlineNic::Response::Base.new(doc)
       # The Base class always handles logging in and out
+      @cache += data
       if @logged_in and !@logging_out
-        @document = REXML::Document.new(data)
-        process_response
+        begin
+	        @document = REXML::Document.new(@cache)
+	        process_response
+	        @cache = ''
+	      rescue REXML::ParseException => e
+          # Wait for more data
+	      end
       else
         original = @document
-        @document = REXML::Document.new(data)
-        process_base
+        begin
+	        @document = REXML::Document.new(@cache)
+	        process_base
+	        @cache = ''
+	      rescue REXML::ParseException => e
+          # Wait for more data
+	      end
         @document = original
       end
     end
@@ -75,11 +88,6 @@ module OnlineNic
     end
     def create_checksum(cltrid, *params)
       Digest::MD5.hexdigest(@username + Digest::MD5.hexdigest(@password) + cltrid + params.join(''))
-    end
-    def get_action
-      category = document.root.elements['category'].text
-      action = document.root.elements['action'].text
-      "#{category}/#{action}"
     end
     def logout
       @logging_out = true
