@@ -17,19 +17,6 @@ module OnlineNic
       super
     end
     def receive_data(data)
-      puts "***************** RECEIVED #{data}"
-      #if code >= 2000
-      #  puts data
-      #  raise doc.root.elements['msg'].text
-      #end
-      #@document = doc
-      #if @logged_in and !@logging_out
-      #  process_response
-      #else
-      #  process_base
-      #end
-      #@response = OnlineNic::Response::Base.new(doc)
-      # The Base class always handles logging in and out
       @cache += data
       if @logged_in and !@logging_out
         begin
@@ -40,6 +27,7 @@ module OnlineNic
           # Wait for more data
 	      end
       else
+        # The Base class always handles logging in and out
         original = @document
         begin
 	        @document = REXML::Document.new(@cache)

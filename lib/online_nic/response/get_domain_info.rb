@@ -10,7 +10,7 @@ class OnlineNic::Response::GetDomainInfo < OnlineNic::Response::Base
       @registrant = ContactInfo.new(data, 'r')
       @admin = ContactInfo.new(data, 'a')
       @technical = ContactInfo.new(data, 't')
-      @billing = ContactInfo.new(data, 't')
+      @billing = ContactInfo.new(data, 'b')
     end
   end
   def available?

@@ -24,6 +24,9 @@ module OnlineNic
   def self.get_domain_info config
     transact OnlineNic::Transaction::GetDomainInfo, config
   end
+  def self.update_domain_contact config
+    transact OnlineNic::Transaction::UpdateDomainContact, config
+  end
   class << self
     private
     def transact cls, config

@@ -7,6 +7,7 @@ module OnlineNic
     autoload :GetNameServers, 'online_nic/transaction/get_name_servers'
     autoload :UpdateDns, 'online_nic/transaction/update_dns'
     autoload :GetDomainInfo, 'online_nic/transaction/get_domain_info'
+    autoload :UpdateDomainContact, 'online_nic/transaction/update_domain_contact'
     autoload :Helpers, 'online_nic/transaction/helpers'
   end
 end
