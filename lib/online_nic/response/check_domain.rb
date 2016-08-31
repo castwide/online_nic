@@ -5,7 +5,7 @@ class OnlineNic::Response::CheckDomain < OnlineNic::Response::Base
     if success?
       @domain = data['domain']
       @available = (data['avail'] == '1') || !data['price'].to_s.empty?
-      @price = data['price']
+      @price = data['price'].to_f
     end
   end
   def available?
