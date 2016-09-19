@@ -2,6 +2,14 @@ class OnlineNic::Response::Base
   include OnlineNic::Transaction::Helpers
   attr_reader :document, :data, :error
   
+  class Error
+    attr_reader :message, :value
+    def initialize m, v
+      @message = m
+      @value = v
+    end
+  end
+  
   def initialize document
     @document = document
     @data = {}
@@ -17,14 +25,16 @@ class OnlineNic::Response::Base
   def post_initialize
     # Base class does nothing
   end
+  def code
+    @code ||= document.root.elements['code'].text.to_i
+  end
   # @return [Boolean]
   def success?
-    @success ||= document.root.elements['code'].text.to_i
-    @success < 2000
+    @success ||= (code < 2000)
   end
   private
   def process_error
-    @error = "#{document.root.elements['msg'].text} (#{document.root.elements['value'].text})"
+    @error = Error.new("#{document.root.elements['msg'].text}", "#{document.root.elements['value'].text}")
   end
   def parse_response_data
     document.elements.each('response/resData/data') { |element|
