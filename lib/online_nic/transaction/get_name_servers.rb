@@ -5,10 +5,10 @@ module OnlineNic
     def process_request
       domain = config[:domain]
       domaintype = DomainExtensions.get_type(domain)
-      cltrid = create_cltrid
-      checksum = create_checksum(cltrid, 'infohost', domaintype, domain)
-      request = '<?xml version="1.0"?> <request> <category>domain</category> <action>InfoHost</action> <params> <param name="domaintype">' + domaintype + '</param> <param name="hostname">' + domain + '</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
-      puts request
+      request = create_request 'domain', 'InfoHost'
+      request.add_param 'domaintype', domaintype
+      request.add_param 'hostname', domain
+      request.set_checksum 'infohost', domaintype, domain
       send_data request
     end
     def process_response

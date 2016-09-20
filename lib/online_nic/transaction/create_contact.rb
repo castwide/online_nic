@@ -18,13 +18,23 @@ module OnlineNic
   #
   class Transaction::CreateContact < Transaction::Base
     def process_request
-      cltrid = create_cltrid
       domain = config[:domain]
       domaintype = DomainExtensions.get_type(domain)
       password = 'password12345' # TODO generate random or require in config
-      checksum = create_checksum(cltrid, 'crtcontact', config[:name].to_s, config[:org].to_s, config[:email].to_s)
-      request = '<request> <category>domain</category> <action>CreateContact</action> <params> <param name="domaintype">' + domaintype.to_s + '</param> <param name="name">' + config[:name].to_s + '</param> <param name="org">' + config[:org].to_s + '</param> <param name="country">' + config[:country].to_s + '</param> <param name="province">' + config[:province].to_s + '</param> <param name="city">' + config[:city].to_s + '</param> <param name="street">' + config[:street].to_s + '</param> <param name="postalcode">' + config[:postalcode].to_s + '</param> <param name="voice">' + config[:voice].to_s + '</param> <param name="fax">' + config[:fax].to_s + '</param> <param name="email">' + config[:email].to_s + '</param> <param name="password">' + password.to_s + '</param> </params> <cltrid>' + cltrid.to_s + '</cltrid> <chksum>' + checksum.to_s + '</chksum> </request>'
-      puts request
+      request = create_request 'domain', 'CreateContact'
+      request.add_param 'domaintype', domaintype
+      request.add_param 'name', config[:name]
+      request.add_param 'org', config[:org]
+      request.add_param 'country', config[:country]
+      request.add_param 'province', config[:province]
+      request.add_param 'city', config[:city]
+      request.add_param 'street', config[:street]
+      request.add_param 'postalcode', config[:postalcode]
+      request.add_param 'voice', config[:voice]
+      request.add_param 'fax', config[:fax]
+      request.add_param 'email', config[:email]
+      request.add_param 'password', password
+      request.set_checksum 'crtcontact', config[:name], config[:org], config[:email]
       send_data request
     end
     def process_response

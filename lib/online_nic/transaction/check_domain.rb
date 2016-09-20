@@ -3,9 +3,10 @@ module OnlineNic
     def process_request
       domain = config[:domain]
       domaintype = DomainExtensions.get_type(domain)
-      cltrid = create_cltrid
-      checksum = create_checksum(cltrid, 'checkdomain', domaintype, domain)
-      request = '<?xmlversion="1.0"?> <request> <category> domain</category> <action> CheckDomain </action> <params> <param name="domaintype">' + domaintype + '</param> <param name="domain">' + domain + '</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
+      request = create_request 'domain', 'CheckDomain'
+      request.add_param 'domaintype', domaintype
+      request.add_param 'domain', domain
+      request.set_checksum('checkdomain', domaintype, domain)
       send_data request
     end
     def process_response
@@ -15,9 +16,12 @@ module OnlineNic
         if response.available? and config[:with_price]
           domain = config[:domain]
           domaintype = DomainExtensions.get_type(domain)
-          cltrid = create_cltrid
-          checksum = create_checksum(cltrid, 'getdomainprice', domaintype, domain, 'reg', 1)
-          request = '<request> <category>domain</category> <action>GetDomainPrice</action> <params> <param name="domaintype">' + domaintype + '</param> <param name="domain">' + domain + '</param> <param name="op">reg</param> <param name="period">1</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
+          request = create_request 'domain', 'GetDomainPrice'
+          request.add_param 'domaintype', domaintype
+          request.add_param 'domain', domain
+          request.add_param 'op', 'reg'
+          request.add_param 'period', 1
+          request.set_checksum 'getdomainprice', domaintype, domain, 'reg', 1
           send_data request
         else
           set_response response

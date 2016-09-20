@@ -3,7 +3,6 @@ require 'rexml/document'
 module OnlineNic
   class Transaction::Base < EventMachine::Connection
     include OnlineNic::Transaction::Helpers
-    #attr_reader :config, :document
     attr_reader :config
     
     def initialize username, password, config
@@ -55,13 +54,19 @@ module OnlineNic
       action = get_action
       case action
       when 'client/Greeting'
-        cltrid = create_cltrid
-        checksum = create_checksum(cltrid, 'login')
-        request = '<?xmlversion="1.0" encoding="UTF-8" standalone="no"?> <request> <category>client</category> <action>Login</action> <params> <param name="clid">' + @username + '</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
+        request = create_request 'client', 'Login'
+        request.add_param 'clid', @username
+        request.set_checksum 'login'
         send_data request
       when 'client/Login'
-        @logged_in = true
-        process_request
+        response = OnlineNic::Response::Base.new(document)
+        if response.success?
+	        @logged_in = true
+	        process_request
+        else
+          set_response response
+          EventMachine.stop
+        end
       when 'client/Logout'
         EventMachine.stop
       else
@@ -79,14 +84,17 @@ module OnlineNic
     end
     def logout
       @logging_out = true
-      cltrid = create_cltrid
-      checksum = create_checksum(cltrid, 'logout')
-      request = '<?xmlversion="1.0" encoding="UTF-8" standalone="no"?> <request> <category>client</category> <action>Logout</action> <params> <param name="clid">' + @username + '</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
+      request = create_request 'client', 'Logout'
+      request.add_param 'clid', @username
+      request.set_checksum 'logout'
       send_data request
     end
     protected
     def document
       @document
+    end
+    def create_request category, action
+      RequestDocument.new @username, @password, category, action
     end
     def set_response response_object
       @response = response_object

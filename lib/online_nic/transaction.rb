@@ -1,3 +1,5 @@
+require 'online_nic/request_document'
+
 module OnlineNic
   module Transaction
     autoload :Base, 'online_nic/transaction/base'

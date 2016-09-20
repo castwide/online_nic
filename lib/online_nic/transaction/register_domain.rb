@@ -12,7 +12,6 @@ module OnlineNic
   #
   class Transaction::RegisterDomain < Transaction::Base
     def process_request
-      cltrid = create_cltrid
       domain = config[:domain].to_s
       domaintype = DomainExtensions.get_type(domain)
       period = config[:period].to_s
@@ -24,9 +23,19 @@ module OnlineNic
       billing = config[:billing].to_s
       # ced required for ASIA registration. See Online NIC API reference
       password = 'password12345' # TODO Generate a password
-      checksum = create_checksum(cltrid, 'createdomain', domaintype, domain, period, dns1, dns2, registrant, admin, tech, billing, password)
-      request = '<request> <category>domain</category> <action>CreateDomain</action> <params> <param name="domaintype">' + domaintype + '</param> <param name="mltype">0</param> <param name="domain">' + domain + '</param> <param name="period">' + period + '</param> <param name="dns">' + dns1 + '</param> <param name="dns">' + dns2 + '</param> <param name="registrant">' + registrant + '</param> <param name="tech">' + tech + '</param> <param name="billing">' + billing + '</param> <param name="admin">' + admin + '</param> <param name="password">' + password + '</param> </params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
-      puts request
+      request = create_request 'domain', 'CreateDomain'
+      request.add_param 'domaintype', domaintype
+      request.add_param 'mltype', '0'
+      request.add_param 'domain', domain
+      request.add_param 'period', period
+      request.add_param 'dns', dns1
+      request.add_param 'dns', dns2
+      request.add_param 'registrant', registrant
+      request.add_param 'tech', tech
+      request.add_param 'billing', billing
+      request.add_param 'admin', admin
+      request.add_param 'password', password
+      request.set_checksum 'createdomain', domaintype, domain, period, dns1, dns2, registrant, admin, tech, billing, password
       send_data request
     end
     def process_response

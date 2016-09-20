@@ -3,13 +3,13 @@ module OnlineNic
     def process_request
       domain = config[:domain]
       domaintype = DomainExtensions.get_type(domain)
-      cltrid = create_cltrid
-      checksum = create_checksum(cltrid, 'updatedomaindns', domaintype, domain)
-      request = '<?xml version="1.0"?> <request> <category>domain</category> <action>UpdateDomainDns</action> <params> <param name="domaintype">' + domaintype + '</param> <param name="domain">' + domain + '</param>'
+      request = create_request 'domain', 'UpdateDomainDns'
+      request.add_param 'domaintype', domaintype
+      request.add_param 'domain', domain
       config[:nameservers].each { |ns|
-        request += '<param name="nameserver">' + ns + '</param>'
+        request.add_param 'nameserver', ns
       }
-      request += '</params> <cltrid>' + cltrid + '</cltrid> <chksum>' + checksum + '</chksum> </request>'
+      request.set_checksum 'updatedomaindns', domaintype, domain
       send_data request
     end
     def process_response
