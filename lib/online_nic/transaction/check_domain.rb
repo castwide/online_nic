@@ -16,12 +16,13 @@ module OnlineNic
         if response.available? and config[:with_price]
           domain = config[:domain]
           domaintype = DomainExtensions.get_type(domain)
+          period = config[:period] || 1
           request = create_request 'domain', 'GetDomainPrice'
           request.add_param 'domaintype', domaintype
           request.add_param 'domain', domain
           request.add_param 'op', 'reg'
-          request.add_param 'period', 1
-          request.set_checksum 'getdomainprice', domaintype, domain, 'reg', 1
+          request.add_param 'period', period
+          request.set_checksum 'getdomainprice', domaintype, domain, 'reg', period
           send_data request
         else
           set_response response

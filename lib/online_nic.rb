@@ -33,7 +33,6 @@ module OnlineNic
   class << self
     private
     def transact cls, config
-      puts "Transacting: #{config.inspect}"
       connection = nil
       EventMachine.run do
         login = {}
