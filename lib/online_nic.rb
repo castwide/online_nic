@@ -36,8 +36,14 @@ module OnlineNic
   def self.username
     @username ||= ENV['ONLINENIC_USERNAME']
   end
+  def self.username= str
+    @username = str
+  end
   def self.password
     @password ||= ENV['ONLINENIC_PASSWORD']
+  end
+  def self.password= str
+    @password = str
   end
   class << self
     private
