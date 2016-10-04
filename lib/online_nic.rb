@@ -30,20 +30,29 @@ module OnlineNic
   def self.get_price config
     transact OnlineNic::Transaction::GetPrice, config
   end
+  def self.usermode
+    @usermode ||= ENV['ONLINENIC_MODE']
+  end
+  def self.username
+    @username ||= ENV['ONLINENIC_USERNAME']
+  end
+  def self.password
+    @password ||= ENV['ONLINENIC_PASSWORD']
+  end
   class << self
     private
     def transact cls, config
       connection = nil
       EventMachine.run do
         login = {}
-        if ENV['ONLINENIC_MODE'] == 'test'
+        if usermode == 'test'
           login[:url] = 'ote.onlinenic.com'
           login[:user] = '135610'
           login[:pass] = '654123'
         else
           login[:url] = 'www.onlinenic.com'
-          login[:user] = ENV['ONLINENIC_USERNAME']
-          login[:pass] = ENV['ONLINENIC_PASSWORD']
+          login[:user] = username
+          login[:pass] = password
         end
         connection = EventMachine.connect login[:url], 30009, cls, login[:user], login[:pass], config
       end
