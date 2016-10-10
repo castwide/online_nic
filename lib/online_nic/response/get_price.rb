@@ -4,7 +4,7 @@ class OnlineNic::Response::GetPrice < OnlineNic::Response::Base
   def post_initialize
     if success?
       @domain = data['domain']
-      @price = data['price'].to_f
+      @price = BigDecimal.new(data['price'])
     end
   end
 end

@@ -1,4 +1,5 @@
 require 'eventmachine'
+require 'bigdecimal'
 
 module OnlineNic
   autoload :DomainExtensions, 'online_nic/domain_extensions'

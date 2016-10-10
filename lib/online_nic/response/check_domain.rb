@@ -6,7 +6,7 @@ class OnlineNic::Response::CheckDomain < OnlineNic::Response::Base
       @domain = data['domain']
       @available = (data['avail'] == '1') || !data['price'].to_s.empty?
       if !data['price'].nil?
-        @price = data['price'].to_f
+        @price = BigDecimal.new(data['price'])
       end
     end
   end
