@@ -19,7 +19,7 @@ module OnlineNic
   class Transaction::CreateContact < Transaction::Base
     def process_request
       domain = config[:domain]
-      domaintype = DomainExtensions.get_type(domain)
+      domaintype = config[:domaintype] || DomainExtensions.get_type(domain)
       password = 'password12345' # TODO generate random or require in config
       request = create_request 'domain', 'CreateContact'
       request.add_param 'domaintype', domaintype
