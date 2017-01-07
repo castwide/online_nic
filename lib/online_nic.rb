@@ -13,6 +13,10 @@ module OnlineNic
     result = transact OnlineNic::Transaction::CreateContact, config
     result
   end
+  def self.check_contact config
+    result = transact OnlineNic::Transaction::CheckContact, config
+    result
+  end
   def self.register_domain config
     transact OnlineNic::Transaction::RegisterDomain, config
   end
